@@ -1,4 +1,4 @@
-export const MY_SERVER = "http://127.0.0.1:5000/"
+export const MY_SERVER = "https://redux-ts-diamonds-csv.onrender.com"
 
 export class DiamondClass{
     carat:number = 0;
