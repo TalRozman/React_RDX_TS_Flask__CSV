@@ -6,41 +6,42 @@ import json
 app = Flask(__name__)
 CORS(app)
 
+df = pd.read_csv('diamond.csv')
 
 @app.route('/read')
 def read():
-    df = pd.read_csv('diamond.csv')
+    global df
     return df.to_json(orient='split',index=False)
 
 @app.route('/read/sum')
 def sum():
-    df = pd.read_csv('diamond.csv')
+    global df
     return str(df["price"].sum())
 
 @app.route('/read/max')
 def max():
-    df = pd.read_csv('diamond.csv')
+    global df
     return str(df.max()["price"])
 
 @app.route('/read/counts')
 def ideals():
-    df = pd.read_csv('diamond.csv')
+    global df
     return df['cut'].value_counts().to_dict()
 
 @app.route('/read/colors')
 def colors():
-    df = pd.read_csv('diamond.csv')
+    global df
     return df['color'].value_counts().index.to_list()
 
 @app.route('/read/premiumMedian')
 def premiumMedian():
-    df = pd.read_csv('diamond.csv')
+    global df
     crt = pd.DataFrame(tuple(df[df['cut'] == "Premium"]["carat"].to_list()))
     return crt.median().to_dict()
 
 @app.route('/read/avgPerCut')
 def avgPerCut():
-    df = pd.read_csv('diamond.csv')
+    global df
     newdf = pd.DataFrame(df,columns=['cut','carat'])
     Fair = (newdf[newdf["cut"] == "Fair"]["carat"].sum())/len(newdf[newdf["cut"] == "Fair"])
     Good = (newdf[newdf["cut"] == "Good"]["carat"].sum())/len(newdf[newdf["cut"] == "Good"])
@@ -51,7 +52,7 @@ def avgPerCut():
 
 @app.route('/read/avgPerColor')
 def avgPerColor():
-    df = pd.read_csv('diamond.csv')
+    global df
     newdf = pd.DataFrame(df,columns=['price','color'])
     G = (newdf[newdf["color"] == "G"]["price"].sum())/len(newdf[newdf["color"] == "G"])
     E = (newdf[newdf["color"] == "E"]["price"].sum())/len(newdf[newdf["color"] == "E"])
@@ -76,7 +77,7 @@ def add():
 @app.route('/update/<id>', methods=['PUT'])
 def update(id):
     data = request.get_json()
-    df = pd.read_csv('diamond.csv')
+    global df
     for i in df.to_dict()["x"].keys():
         if i == int(id):
             print(df[0])
@@ -87,7 +88,7 @@ def update(id):
 
 @app.route('/delete/<id>', methods=['DELETE'])
 def delete(id):
-    df = pd.read_csv('diamond.csv')
+    global df
     for i in  df.to_dict()["x"].keys():
         if i == int(id):
             df.drop(i, inplace=True)
